@@ -1,3 +1,3 @@
 # Blog App
 
-## Its a simple blog api that powers crud operations on a posts and comment and also include signup and sign in
+## Its a simple blog api that powers crud operations on a posts, comment and also includes user signup and signin
