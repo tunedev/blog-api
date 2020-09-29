@@ -16,4 +16,4 @@ commentSchema.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('Post', commentSchema);
+module.exports = mongoose.model('Comment', commentSchema);
