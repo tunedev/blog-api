@@ -15,9 +15,14 @@ class Auth {
       username,
       password: hashedPassword,
       email,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
-    const token = await jwt.sign({ id: newUser.id }, process.env.SECRET);
+    const token = await jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      process.env.SECRET
+    );
 
     try {
       const data = await newUser.save().then((user) => user.toJSON());
@@ -51,7 +56,10 @@ class Auth {
       });
     }
 
-    const token = await jwt.sign({ id: userAccount.id }, process.env.SECRET);
+    const token = await jwt.sign(
+      { id: userAccount.id, email: userAccount.email },
+      process.env.SECRET
+    );
 
     return Helper.successResponse(response, 201, {
       ...userAccount,
