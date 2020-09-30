@@ -1,9 +1,15 @@
 const Route = require('express').Router();
 const Auth = require('../Controller/Auth');
-const AuthValidation = require('../validation/AuthValidation');
-const ensureUserDetailsIsUnique = require('../Middleware/confirmUniqueUsernameAndEmail');
+const Validation = require('../validation/Validation');
+const Blog = require('../Controller/Blog');
+const {
+  authToken,
+  confirmUniqueUsernameAndEmail,
+  verifyPostIdExist,
+  verifyCommentIdExist,
+} = require('../Middleware');
 
-const { validator, checkValidationResult } = AuthValidation;
+const { validator, checkValidationResult } = Validation;
 
 // Welcome route
 Route.get('/', (request, response) => {
@@ -18,8 +24,69 @@ Route.post(
   '/auth/signup',
   validator('signup'),
   checkValidationResult,
-  ensureUserDetailsIsUnique,
+  confirmUniqueUsernameAndEmail,
   Auth.signup
 ).post('/auth/signin', validator('signin'), checkValidationResult, Auth.signin);
+
+// Post Route
+Route.post(
+  '/posts',
+  authToken,
+  validator('post'),
+  checkValidationResult,
+  Blog.createPost
+)
+  .get('/posts', Blog.getAll)
+  .get(
+    '/posts/:postId',
+    validator('postId'),
+    checkValidationResult,
+    verifyPostIdExist,
+    Blog.getById
+  )
+  .patch(
+    '/posts/:postId',
+    validator('postId'),
+    checkValidationResult,
+    verifyPostIdExist,
+    Blog.updateById
+  )
+  .post(
+    '/posts/:postId/comments',
+    authToken,
+    validator('comment'),
+    validator('postId'),
+    checkValidationResult,
+    verifyPostIdExist,
+    Blog.addCommentToPost
+  )
+  .get(
+    '/posts/:postId/comments',
+    validator('postId'),
+    checkValidationResult,
+    verifyPostIdExist,
+    Blog.getAllComment
+  )
+  .get(
+    '/comments/:commentId',
+    validator('commentId'),
+    checkValidationResult,
+    verifyCommentIdExist,
+    Blog.getCommentById
+  )
+  .patch(
+    '/comments/:commentId',
+    validator('commentId'),
+    checkValidationResult,
+    verifyCommentIdExist,
+    Blog.updateComment
+  )
+  .delete(
+    '/comments/:commentId',
+    validator('commentId'),
+    checkValidationResult,
+    verifyCommentIdExist,
+    Blog.deleteComment
+  );
 
 module.exports = Route;

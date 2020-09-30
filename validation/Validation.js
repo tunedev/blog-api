@@ -1,7 +1,7 @@
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, param } = require('express-validator');
 const Helper = require('../utils/Helper');
 
-const AuthValidation = {
+const Validation = {
   validator(route) {
     switch (route) {
       case 'signup':
@@ -49,6 +49,40 @@ const AuthValidation = {
             .isLength({ min: 8 })
             .withMessage('Password can not be less than 8 characters'),
         ];
+      case 'post':
+        return [
+          check('title')
+            .isLength({ min: 2 })
+            .withMessage('Please enter the title for this post')
+            .trim(),
+          check('body')
+            .isLength({ min: 2 })
+            .withMessage('Please enter a valid content for this post')
+            .trim(),
+        ];
+      case 'comment':
+        return [
+          check('body')
+            .isLength({ min: 2 })
+            .withMessage('Please enter a valid content for this post')
+            .trim(),
+        ];
+      case 'postId':
+        return [
+          param('postId')
+            .isString()
+            .isLength({ min: 12 })
+            .matches(/^[0-9a-fA-F]{24}$/)
+            .withMessage('Invalid Post Id, confirm the id is correct'),
+        ];
+      case 'commentId':
+        return [
+          param('commentId')
+            .isString()
+            .isLength({ min: 12 })
+            .matches(/^[0-9a-fA-F]{24}$/)
+            .withMessage('Invalid comment Id, confirm the id is correct'),
+        ];
     }
   },
   checkValidationResult(request, response, next) {
@@ -66,4 +100,4 @@ const AuthValidation = {
   },
 };
 
-module.exports = AuthValidation;
+module.exports = Validation;
