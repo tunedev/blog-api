@@ -1,6 +1,5 @@
-const Helper = require('../utils/Helper');
-const db = require('../Model');
 const { successResponse } = require('../utils/Helper');
+const db = require('../Model');
 
 class Blog {
   static async createPost(request, response) {
@@ -17,7 +16,7 @@ class Blog {
 
     const data = await newPost.save().then((post) => post.toJSON());
 
-    return Helper.successResponse(response, 201, {
+    return successResponse(response, 201, {
       message: 'The stuff dey work well',
       data,
     });
@@ -26,7 +25,7 @@ class Blog {
   static async getAll(request, response) {
     const data = await db.Post.find({});
 
-    return Helper.successResponse(response, 200, data);
+    return successResponse(response, 200, data);
   }
 
   static async getById(request, response) {
@@ -34,7 +33,7 @@ class Blog {
       'comments'
     );
 
-    return Helper.successResponse(response, 200, data);
+    return successResponse(response, 200, data);
   }
 
   static async updateById(request, response) {
@@ -44,7 +43,7 @@ class Blog {
       { title, body, updated_at: new Date() },
       { new: true }
     );
-    return Helper.successResponse(response, 200, data);
+    return successResponse(response, 200, data);
   }
 
   static async addCommentToPost(request, response) {
@@ -71,7 +70,7 @@ class Blog {
       return comment.toJSON();
     });
 
-    return Helper.successResponse(response, 201, data);
+    return successResponse(response, 201, data);
   }
 
   static async getAllComment(request, response) {

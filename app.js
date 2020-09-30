@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const v1Route = require('./Routes');
+const { failResponse } = require('./utils/Helper');
 
 const mongoUrl = process.env.DATABASE_URL;
 
@@ -30,6 +31,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', v1Route);
+
+app.get('/', (request, response) => {
+  response.status(200).send(
+    `
+      <h1>Welcome to blog api</h1>
+      <a href="/api/">Welcome route</a>
+    `
+  );
+});
+
+app.all('*', (request, response) => {
+  return failResponse(response, 404, {
+    message: 'specified route does not exist',
+  });
+});
 
 const PORT = process.env.PORT || 3003;
 

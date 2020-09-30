@@ -1,4 +1,4 @@
-const Helper = require('../utils/Helper');
+const { failResponse, successResponse } = require('../utils/Helper');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../Model/index');
@@ -27,9 +27,9 @@ class Auth {
     try {
       const data = await newUser.save().then((user) => user.toJSON());
       data.password = undefined;
-      return Helper.successResponse(response, 201, { ...data, token });
+      return successResponse(response, 201, { ...data, token });
     } catch (error) {
-      return Helper.failResponse(response, 500, error);
+      return failResponse(response, 500, error);
     }
   }
   static async signin(request, response) {
@@ -43,7 +43,7 @@ class Auth {
     });
 
     if (!userAccount) {
-      return Helper.failResponse(response, 401, {
+      return failResponse(response, 401, {
         message: 'Invalid login credentials',
       });
     }
@@ -51,7 +51,7 @@ class Auth {
     const isPassword = await bcrypt.compare(password, userAccount.password);
 
     if (!isPassword) {
-      return Helper.failResponse(response, 401, {
+      return failResponse(response, 401, {
         message: 'Invalid login credentials',
       });
     }
@@ -61,7 +61,7 @@ class Auth {
       process.env.SECRET
     );
 
-    return Helper.successResponse(response, 201, {
+    return successResponse(response, 201, {
       ...userAccount,
       token,
     });

@@ -1,5 +1,5 @@
 const db = require('../Model');
-const Helper = require('../utils/Helper');
+const { failResponse } = require('../utils/Helper');
 
 const confirmUniqueUsernameAndEmail = async (request, response, next) => {
   const { email, username } = request.body;
@@ -10,11 +10,11 @@ const confirmUniqueUsernameAndEmail = async (request, response, next) => {
   console.log('middleware: ', emailExist, usernameExist);
 
   if (emailExist.length > 0) {
-    return Helper.failResponse(response, 409, {
+    return failResponse(response, 409, {
       message: `account with email: ${email} already exist`,
     });
   } else if (usernameExist.length > 0) {
-    return Helper.failResponse(response, 409, {
+    return failResponse(response, 409, {
       message: `account with username: ${username} already exist`,
     });
   }
